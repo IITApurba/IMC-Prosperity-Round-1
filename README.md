@@ -12,7 +12,21 @@ When analyzing this repository for future algorithmic improvements, review the `
 
 *This log is updated per simulation run to document findings systematically.*
 
-### 🟢 Iteration: Strategy V2 (Current)
+### 🟢 Iteration: Strategy V4 (Current)
+* **Strategy Goal:** Secure queue priority and stop spread-bleeding inventory mechanics by replacing price-shifts with volume-throttling.
+* **PnL Outcome:** ~1978 (New High Score!)
+* **Asset Insights:**
+  * **EMERALDS:** Static staging reintroduced at `9995 / 10005`. V3's dynamic `min(best_bid+1)` dropped bounds too tightly, letting opposing bot limits intercept volume at 9994/9995. By retaining conservative 5-tick margins, we establish dominance at the front of the Limit Order queue without falling behind competing algorithm prices.
+  * **TOMATOES:** Abandoned all price-based inventory skew shifts. We reinstated pure V2 pricing (`best_bid+1` / `best_ask-1`) but applied a **Volume Firewall**. If `abs(position) > 15`, we clamp volume completely (`v=0`) to halt accumulation securely without surrendering spread ticks.
+
+### 🔴 Iteration: Strategy V3
+* **Strategy Goal:** Optimize dynamic spread capitalization for Emeralds and add Inventory-Skew to Tomatoes to manage risk.
+* **PnL Outcome:** ~1846 (Underperformed V2)
+* **Asset Insights:**
+  * **EMERALDS:** Dynamic quoting at `best_bid+1` / `best_ask-1`, sought 7-8 ticks per matched order but mathematically suffered heavy adverse selection due to losing Queue Priority inside the 16-tick spread.
+  * **TOMATOES:** Implemented an inventory-skew shift. Paid for liquidity by crossing our own spread up to 3 ticks, bleeding overall cumulative profit margin to mitigate risk loosely.
+
+### 🟢 Iteration: Strategy V2
 * **Strategy Goal:** Switch to passive market making and widen spreads to avoid adverse selection.
 * **PnL Outcome:** ~1900
 * **Asset Insights:**
