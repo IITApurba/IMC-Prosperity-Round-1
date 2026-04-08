@@ -12,7 +12,21 @@ When analyzing this repository for future algorithmic improvements, review the `
 
 *This log is updated per simulation run to document findings systematically.*
 
-### 🟢 Iteration: Strategy V4 (Current)
+### 🟢 Iteration: Strategy V6 (Current)
+* **Strategy Goal:** Solid-State Edge Tapering & Reclaiming Static Queue Dominance.
+* **PnL Outcome:** ~1995 (New High Score!)
+* **Asset Insights:**
+  * **EMERALDS:** Abandoned "Smart-Stacking". Restored pure static lock at `9995`/`10005`. Limit Order modification penalty (losing queue positioning) is more devastating than squeezing 1 additional tick.
+  * **TOMATOES:** Stripped out OFI and fractional risk scaling. We replaced total hard-stops with "Solid-State Edge Tapering": requesting massive volumes in the middle bounds (0 to 14), and then statically requesting exactly `1-lot` sized fills from 15 to 20 to capture the edges linearly without queuing-up modifications constantly.
+
+### 🔴 Iteration: Strategy V5
+* **Strategy Goal:** Implement Institutional Quantitative models (EMERALDS Smart Stacking, TOMATOES Order Flow Imbalance drift & Fractional Risk Scaling).
+* **PnL Outcome:** ~1825 (Queue Priority Penalty)
+* **Asset Insights:**
+  * **EMERALDS:** Massive execution failure (29 total trades). By constantly updating our limit prices from 9995 to 9996 when the LOB depth looked safe, we voluntarily relinquished our position at the front of the queue to other simulator algorithms.
+  * **TOMATOES:** Constant fractional risk scaling (`x * (1 - (v/20)^2)`) generated varying order sizes every single timestamp as inventory naturally grew. Modifying the resting limit order size forced the algorithm to the back of the LOB queue constantly, hemorrhaging fill-rates.
+
+### 🟢 Iteration: Strategy V4
 * **Strategy Goal:** Secure queue priority and stop spread-bleeding inventory mechanics by replacing price-shifts with volume-throttling.
 * **PnL Outcome:** ~1978 (New High Score!)
 * **Asset Insights:**
